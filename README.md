@@ -6,7 +6,7 @@ elstar is a single compiled binary for iOS simulator development: drive a live a
 
 No SDK to embed. No proxy certificates. No GUI app that has to stay open. Works on any app you can launch in the simulator.
 
-> This repository hosts **releases, the issue tracker, and public documentation**. Website: [elstar.dev](https://elstar.dev)
+> This repository hosts **releases, the issue tracker, and public documentation**. Website: [elstar.dev](https://elstar.dev) · What's new: [Releases](../../releases)
 
 ## Install
 
@@ -20,7 +20,7 @@ or without Homebrew:
 curl -fsSL https://elstar.dev/install.sh | bash
 ```
 
-Requires macOS 15+ and Xcode. A 7-day trial starts on first use — `elstar license activate <key>` to unlock.
+Requires macOS 15 or later and Xcode 26 or later. A 7-day trial starts on first use — `elstar license activate <key>` to unlock.
 
 ## Quick start
 
@@ -35,28 +35,27 @@ elstar eval 'UIApplication.shared.windows.count'   # run code in the live proces
 ## For AI agents
 
 ```bash
-elstar mcp install    # register the MCP server with your agent
-elstar skills install # bundled skills: ios-setup, ios-test, ios-audit, ios-debug, ios-perf
-elstar hook install   # Claude Code hooks: hot-reload-on-edit, crash detection, a11y audit
+elstar mcp install    # register the MCP server (32 tools) with your agent
+elstar skills install # bundled skills: ios-setup, ios-test, ios-audit, ios-debug
+elstar hook install   # Claude Code hook: hot-reload on edit; --a11y adds an accessibility audit
 ```
 
-Every command supports `--json` with structured errors, `elements --compact` for token-efficient output, and `state` for a single-round-trip snapshot designed for agent loops.
+Every command supports `--json` with structured errors, `elements --compact` for token-efficient output, and `state` for a single-round-trip snapshot designed for agent loops. The MCP session pins itself to one simulator, so booting another never retargets your agent.
 
 ## What it does
 
 - **Hot reload** — SwiftUI views, UIKit view controllers, pure-Swift classes, XIBs, and assets injected into the running app in about a second. No rebuild, no relaunch, no SDK.
 - **Network** — capture and decrypt the foreground app's HTTPS traffic with zero setup; mock endpoints for testing.
-- **Runtime** — evaluate Swift/ObjC expressions in the live process, dump classes and ivars, attach a persistent debug REPL.
-- **UI automation** — native tap/swipe/drag/type via simulator HID; generate XCUITest code from recorded interactions.
-- **Inspection** — accessibility tree, view hierarchy, element queries by role/label, screenshots.
-- **Performance** — launch time, hitches, gauges, leaks — instrumented from the CLI, usable in CI.
-- **Simulator control** — boot, install, launch, push notifications, permissions, privacy state, app data.
+- **Runtime** — evaluate Swift/ObjC expressions in the live process; walk the view hierarchy.
+- **UI automation** — native tap/swipe/drag/type and hardware buttons via the simulator's own input path; generate XCUITest code from the live screen.
+- **Inspection** — accessibility tree, view hierarchy, element queries by role/label, `wait`/`assert` for agent loops, screenshots, display topology.
+- **Simulator control** — boot and shut down, install and launch, list devices and apps, set privacy permissions and location.
 
-Full command reference: `elstar --help` or [elstar.dev](https://elstar.dev).
+38 commands in the current release. Commands ship behind a stability gate and appear as they're verified on the current Xcode — `elstar --help` is the authoritative list.
 
 ## Reporting issues
 
-Bug reports and feature requests are welcome in [Issues](../../issues). For crashes or misbehavior, attach the output of `elstar diagnose --out bug.txt` — it collects versions, device state, and recent logs (no source code or secrets).
+Bug reports and feature requests are welcome in [Issues](../../issues), or run `elstar feedback` from the terminal. For crashes or misbehavior, attach the output of `elstar diagnose --out bug.txt` — it collects versions, device state, and recent logs (no source code or secrets).
 
 ## License
 
