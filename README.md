@@ -1,12 +1,10 @@
 # elstar
 
-**Everything you can't do with Xcode alone, from your terminal. Or let your AI agent do it.**
+**Drive, inspect and hot-reload your iOS app in the simulator — from your terminal or your AI agent.**
 
-elstar is a single compiled binary for iOS simulator development: drive a live app, inspect its UI and network traffic, hot-reload Swift without rebuilding, and evaluate code in the running process — from your shell, your CI, or an AI agent over MCP.
+One compiled binary. No SDK to embed, no proxy certificates, no app that has to stay open. Works on any app you can run in the simulator.
 
-No SDK to embed. No proxy certificates. No GUI app that has to stay open. Works on any app you can launch in the simulator.
-
-> This repository hosts **releases, the issue tracker, and public documentation**. Website: [elstar.dev](https://elstar.dev) · What's new: [Releases](../../releases)
+> This repository hosts **releases and the issue tracker**. Website and docs: [elstar.dev](https://elstar.dev) · What's new: [Releases](../../releases)
 
 ## Install
 
@@ -20,43 +18,46 @@ or without Homebrew:
 curl -fsSL https://elstar.dev/install.sh | bash
 ```
 
-Requires macOS 15 or later and Xcode 26 or later. A paid license is required — activate it with `elstar license activate <key>`. The automatic local trial is temporarily unavailable.
+Requires Xcode 27.1 or later (macOS 26.6+).
+
+Your first command starts a free 7-day trial — no signup, no card, internet needed once. When it ends, run `elstar license activate <key>`.
 
 ## Quick start
 
+Build and run your app from Xcode on a simulator, then:
+
 ```bash
-elstar state                  # app info + screen size + elements + screenshot, one JSON call
-elstar tap "Sign In" --wait   # tap by accessibility label, polling until it appears
-elstar hot Sources/HomeView.swift   # hot-reload a SwiftUI/UIKit file into the running app
-elstar net                    # live HTTPS traffic of the foreground app — no proxy, no certs
-elstar eval com.example.app '[[UIApplication sharedApplication] windows].count'   # evaluate ObjC in your running app
+elstar state                      # app, screen size, tappable elements and a screenshot in one call
+elstar tap "Sign In" --wait       # tap by label, waiting for it to appear
+elstar type "hi@example.com"      # type into the focused field
+elstar hot Sources/HomeView.swift # hot-reload a file into the running app
+elstar net                        # the app's HTTPS traffic, no proxy or certificates
 ```
 
 ## For AI agents
 
 ```bash
-elstar mcp install    # register the MCP server (34 tools) with your agent
-elstar skills install # bundled skills: ios-setup, ios-test, ios-audit, ios-debug
-elstar hook install   # Claude Code hook: hot-reload on edit; --a11y adds an accessibility audit
+elstar mcp install       # add elstar's 40 tools to this project for Claude Code
+elstar skills install    # skills: ios-setup, ios-test, ios-audit, ios-debug
+elstar hook install --all  # hot-reload and accessibility checks after every agent edit
 ```
 
-Every command supports `--json` with structured errors, `elements --compact` for token-efficient output, and `state` for a single-round-trip snapshot designed for agent loops. The MCP session pins itself to one simulator, so booting another never retargets your agent.
+Any MCP client can run `elstar mcp` directly. Every command takes `--json`, and `state` returns everything an agent needs in one round trip.
 
 ## What it does
 
-- **Hot reload** — SwiftUI views, UIKit view controllers, pure-Swift classes, XIBs, and assets injected into the running app in about a second. No rebuild, no relaunch, no SDK.
-- **Network** — capture and decrypt the foreground app's HTTPS traffic with zero setup; mock endpoints for testing.
-- **Runtime** — evaluate Swift/ObjC expressions in the live process; walk the view hierarchy.
-- **UI automation** — native tap/swipe/drag/type and hardware buttons via the simulator's own input path; generate XCUITest code from the live screen.
-- **Inspection** — accessibility tree, view hierarchy, element queries by role/label, `wait`/`assert` for agent loops, screenshots, display topology.
-- **Simulator control** — boot and shut down, install and launch, list devices and apps, set privacy permissions and location.
+- **Hot reload** — SwiftUI views, UIKit view controllers, final Swift classes, XIBs and assets, without rebuilding or relaunching.
+- **Network** — capture the app's HTTPS traffic, export it as HAR, and mock endpoints.
+- **Runtime** — evaluate Swift or Objective-C in the running app, inspect the view hierarchy and live values.
+- **UI automation** — tap, swipe, drag, type, hardware buttons, `wait` and `assert`; generate XCUITest code from the screen.
+- **Simulator control** — boot, install, launch, permissions, push notifications, location, appearance.
 
-41 top-level commands in release 1.0.7. Commands ship behind a stability gate and appear as they're verified on the current Xcode — `elstar --help` is the authoritative list.
+`elstar --help` lists every command.
 
 ## Reporting issues
 
-Bug reports and feature requests are welcome in [Issues](../../issues), or run `elstar feedback` from the terminal. For crashes or misbehavior, attach the output of `elstar diagnose --out bug.txt` — it collects versions, device state, and diagnostic details. Review the report before sharing it; source files and crash-report contents are not included automatically.
+Open an [issue](../../issues) or run `elstar feedback`. For a crash or wrong behaviour, attach `elstar diagnose --out bug.txt`, and read it before sharing.
 
 ## License
 
-Commercial software requiring a paid license. The automatic local trial is temporarily unavailable. One license covers one developer on two machines. See [elstar.dev](https://elstar.dev) for pricing.
+Commercial software: a free 7-day trial, then $69/year for one developer on two machines. See [elstar.dev](https://elstar.dev#pricing).
